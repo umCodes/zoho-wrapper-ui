@@ -1,24 +1,43 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { AuthProvider, useAuth } from '@/context/authContext';
+import { Stack, useRouter } from 'expo-router';
+import { useEffect } from 'react';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+ function RouteGaurd({children}: {children: React.ReactNode}){
+  const router = useRouter()
+  const {user} = useAuth()
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+  // useEffect(() => {
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  //   if (user) {
+  //     router.replace('/(app)/dashboard')
+  //   } else {
+  //     router.replace('/(auth)/welcome')
+  //   }
+  // }, [user, router])
+  return (<>
+    {children}
+  </>);
 
+}
+
+export default function RootLayout(){
+
+    const router = useRouter()
+  const {user} = useAuth()
+
+  useEffect(() => {
+
+    if (user) {
+      router.replace('/(protected)')
+    } else {
+      router.replace('/(public)')
+    }
+  }, [user, router])
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    <AuthProvider>
+    <RouteGaurd>
+      <Stack screenOptions={{headerShown: false}}/>
+    </RouteGaurd>
+    </AuthProvider>
+  )
 }
