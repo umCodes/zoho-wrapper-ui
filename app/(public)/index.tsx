@@ -19,7 +19,7 @@ const WelcomeScreen = () => {
                 <Text style={text.description}>A simpler user interface for easier inventory management</Text>
             </View>
 
-            <Pressable style={styles.button} onPress={() => router.push('/(auth)/auth') }>
+            <Pressable style={styles.button} onPress={() => router.push('/(public)/auth') }>
                 <Text style={styles.buttonText}>
                     Login
                 </Text>

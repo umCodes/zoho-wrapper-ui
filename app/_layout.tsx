@@ -1,43 +1,18 @@
-import { AuthProvider, useAuth } from '@/context/authContext';
-import { Stack, useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { AuthProvider } from '@/context/authContext';
+import { Stack } from 'expo-router';
 
- function RouteGaurd({children}: {children: React.ReactNode}){
-  const router = useRouter()
-  const {user} = useAuth()
-
-  // useEffect(() => {
-
-  //   if (user) {
-  //     router.replace('/(app)/dashboard')
-  //   } else {
-  //     router.replace('/(auth)/welcome')
-  //   }
-  // }, [user, router])
-  return (<>
-    {children}
-  </>);
-
-}
 
 export default function RootLayout(){
 
-    const router = useRouter()
-  const {user} = useAuth()
-
-  useEffect(() => {
-
-    if (user) {
-      router.replace('/(protected)')
-    } else {
-      router.replace('/(public)')
-    }
-  }, [user, router])
   return (
-    <AuthProvider>
-    <RouteGaurd>
-      <Stack screenOptions={{headerShown: false}}/>
-    </RouteGaurd>
-    </AuthProvider>
+        <AuthProvider>
+
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(index)" />
+            <Stack.Screen name="(public)" />
+            <Stack.Screen name="(protected)" />
+          </Stack>
+        </AuthProvider>
+
   )
 }

@@ -14,7 +14,8 @@ const AuthContext = createContext({
     error: '',
     // authorize: async () =>{},
     setError: (() => {}) as Dispatch<SetStateAction<string>>, 
-    authenticate: async () => {} 
+    authenticate: async () => {}, 
+    logout: async () => {} 
 });
 
 
@@ -29,8 +30,8 @@ export function AuthProvider({children}: {children: ReactNode}){
     const router = useRouter()
 
     // useEffect(() => {
-        
-    // }, [userData]);
+    //     if(!user) router.replace('/(public)')
+    // }, [user, router]);
     
     const authenticate = async () => {
         try {
@@ -39,7 +40,7 @@ export function AuthProvider({children}: {children: ReactNode}){
             await SecureStore.setItemAsync('refresh_token', String(response.refresh_token));
             setUser(response.access_token);
             setIsLoading(false)
-            router.replace('/(tabs)/dashboard')
+            router.replace('/(protected)/dashboard')
         } catch (error) {
             setIsLoading(false)
             console.error("Authentication error: ", error);
@@ -47,8 +48,18 @@ export function AuthProvider({children}: {children: ReactNode}){
 
     }
 
+    const logout = async () => {
+        try{
+            await apiReqest('auth/logout', 'DELETE', null)
+            await SecureStore.deleteItemAsync('refresh_token');
+            setUser(null);
+            router.replace('/(public)')
+        }catch(error){
+            console.error("Logout error: ", error);
+        }
+    }
     return (
-        <AuthContext.Provider  value={{user, userData, setUserData, authenticate, isLoading, error, setError}}>
+        <AuthContext.Provider  value={{user, userData, setUserData, authenticate, isLoading, error, setError, logout}}>
             {children}
         </AuthContext.Provider>
     )

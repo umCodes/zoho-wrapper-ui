@@ -1,15 +1,17 @@
-import { useRouter } from 'expo-router';
+import { useAuth } from '@/context/authContext';
+import { colors } from '@/styles/styles';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 
-export default function Home(){
-    const router = useRouter();
+export default function Dashboard(){
+  const {user, logout} = useAuth();
   return (
-    <View>
-
-      <Pressable onPress={() => {}}>
-        <Text>Home</Text>
-
+    <View style={[colors.dark.background, {flex: 1}]}>
+      <Text style={[colors.dark.defaultText]}>
+        {user}
+      </Text>
+      <Pressable onPress={logout}>
+        <Text style={[colors.dark.clickableText]}>Logout</Text>
       </Pressable>
     </View>
   )
